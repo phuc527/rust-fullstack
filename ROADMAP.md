@@ -8,7 +8,7 @@ Stack: **Axum** · **Leptos (WASM)** · **Postgres + sqlx** (từ Day 8) · **ng
 | Day | Backend (api) | Frontend (web) | Khái niệm Rust chính | Level |
 |---|---|---|---|---|
 | 1 ✅ | `GET /api/health` | Trang gọi API, hiện status | cargo, async, Option, WASM | ⭐ |
-| 2 | `GET /api/seats` trả lưới 5×10 (`struct Seat` + serde) | Render lưới ghế | struct, Vec, iterator, serde, `For` | ⭐ |
+| 2 ✅ | `GET /api/seats` trả lưới 5×10 (`struct Seat` + serde) | Render lưới ghế, loading/lỗi | struct, Vec, iterator, serde, Result, props | ⭐ |
 | 3 | `POST /api/seats/{id}/book`, state `Arc<Mutex>` | Click ghế → đặt, đổi màu | ownership, borrow, `&mut`, signal set | ⭐⭐ |
 | 4 | `enum SeatStatus {Free, Held, Booked}` | Màu theo status, chú thích | enum, `match`, exhaustive | ⭐⭐ |
 | 5 | `AppError` → 404/409, `IntoResponse` | Hiện lỗi "ghế đã có người đặt" | `Result`, `?`, trait | ⭐⭐ |
