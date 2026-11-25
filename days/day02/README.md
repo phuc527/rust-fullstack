@@ -7,13 +7,36 @@ cd days/day02
 docker compose up --build
 ```
 
+## Cấu trúc (chuẩn production, dùng từ Day 2 trở đi)
+```
+api/src/
+  main.rs          entrypoint: đọc config, bind cổng, serve      (≈ server.ts)
+  lib.rs           khai báo module → test/integration test import được
+  config.rs        Config::from_env() — PORT từ env                (≈ process.env)
+  models/
+    mod.rs         re-export                                       (≈ index.ts)
+    seat.rs        struct Seat + Seat::grid() + unit test          (domain)
+  routes/
+    mod.rs         router(): nest("/api", ...)                     (≈ app.use('/api', r))
+    health.rs      GET /api/health
+    seats.rs       GET /api/seats — handler mỏng ≈ controller
+web/src/
+  main.rs          mount App                                       (≈ main.tsx)
+  app.rs           App: gọi API, xử lý loading/lỗi/data
+  api.rs           fetch_seats() — lớp HTTP                        (≈ src/api/*.ts)
+  models.rs        struct Seat (Deserialize)
+  components/
+    mod.rs
+    seat_grid.rs   <SeatGrid seats=.../>
+```
+Quy tắc: `main` không chứa logic · handler/component mỏng · logic nằm ở `models` · HTTP client tách riêng.
+
 ## Thay đổi so với Day 1
 | File | Mới |
 |---|---|
-| `api/Cargo.toml` | + `serde` |
-| `api/src/main.rs` | `struct Seat`, `all_seats()` (iterator), `GET /api/seats`, unit test |
-| `web/Cargo.toml` | + `serde` |
-| `web/src/main.rs` | `fetch_seats()` trả `Result`, component `SeatGrid` có props, xử lý 3 trạng thái loading/lỗi/data |
+| `api/Cargo.toml`, `web/Cargo.toml` | + `serde` |
+| `api/src/*` | tách module như trên, `GET /api/seats`, unit test |
+| `web/src/*` | `fetch_seats()` trả `Result`, component `SeatGrid` có props, 3 trạng thái |
 | `web/index.html` | CSS lưới ghế |
 
 ## Khái niệm chốt hôm nay
@@ -24,6 +47,8 @@ docker compose up --build
 - **Result + `?`**: lỗi là một giá trị trong kiểu trả về; `?` = trả lỗi ra ngoài sớm.
 - **match 3 nhánh**: loading (`None`) / lỗi (`Some(Err)`) / data (`Some(Ok)`). Bỏ 1 nhánh → compile lỗi.
 - **Component props**: `fn SeatGrid(seats: Vec<Seat>)` ≈ `function SeatGrid({ seats })`.
+- **Module**: `mod x;` khai báo file `x.rs`/`x/mod.rs`. Rust không tự nhận file — quên `mod` = file không được compile. `pub` mới dùng được từ ngoài; `pub use` = re-export; `crate::` = gốc crate.
+- **lib + bin**: `main.rs` gọi `use api::routes` từ `lib.rs` — cùng 1 crate có 2 target.
 - **`#[cfg(test)]`**: test sống cạnh code, `cargo test` để chạy.
 
 ## So với Node
@@ -38,5 +63,6 @@ Ngắn tương đương — nhưng bản Rust: struct định nghĩa shape 1 l�
 ## Tự kiểm tra
 1. `cd api && cargo test` — sửa `50` thành `51`, đọc thông báo lỗi.
 2. Giữ `col: u8` ở api, đổi thành `col: String` ở web. UI hiện gì? (gợi ý: nhánh `Err`)
-3. Bỏ `move` trong `all_seats()` — compiler nói gì về `row`?
-4. Tắt container api (`docker compose stop api`) rồi reload trang — thấy nhánh nào?
+3. Bỏ `move` trong `Seat::grid()` — compiler nói gì về `row`?
+4. Xóa dòng `mod health;` trong `routes/mod.rs` — lỗi gì?
+5. Tắt container api (`docker compose stop api`) rồi reload trang — thấy nhánh nào?
