@@ -9,7 +9,7 @@ Stack: **Axum** · **Leptos (WASM)** · **Postgres + sqlx** (từ Day 8) · **ng
 |---|---|---|---|---|
 | 1 ✅ | `GET /api/health` | Trang gọi API, hiện status | cargo, async, Option, WASM | ⭐ |
 | 2 ✅ | `GET /api/seats` trả lưới 5×10 (`struct Seat` + serde) | Render lưới ghế, loading/lỗi | struct, Vec, iterator, serde, Result, props, **module/layout production** | ⭐ |
-| 3 | `POST /api/seats/{id}/book`, state `Arc<Mutex>` | Click ghế → đặt, đổi màu | ownership, borrow, `&mut`, signal set | ⭐⭐ |
+| 3 ✅ | `POST /api/seats/{id}/book`, state `Arc<Mutex>` | Click ghế → đặt, đổi màu | ownership, borrow, `&mut`, signal set | ⭐⭐ |
 | 4 | `enum SeatStatus {Free, Held, Booked}` | Màu theo status, chú thích | enum, `match`, exhaustive | ⭐⭐ |
 | 5 | `AppError` → 404/409, `IntoResponse` | Hiện lỗi "ghế đã có người đặt" | `Result`, `?`, trait | ⭐⭐ |
 | 6 | Workspace + crate `shared` (type dùng chung FE/BE) | Dùng `shared::Seat`, bỏ type trùng | modules, crates, workspace | ⭐⭐ |
