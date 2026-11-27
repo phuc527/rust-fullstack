@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Seatly</title>
+    <link data-trunk rel="rust" />
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 16px; }
+      .screen { text-align: center; padding: 6px; margin-bottom: 16px; background: #eee; border-radius: 4px; font-size: .8rem; letter-spacing: .2em; }
+      .grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+      .seat { padding: 10px 0; border: 1px solid #999; border-radius: 6px; font-size: .8rem; cursor: pointer; }
+      .seat.free { background: #fff; }
+      .seat.held { background: #f0ad4e; color: #fff; border-color: #f0ad4e; cursor: not-allowed; }
+      .seat.booked { background: #d9534f; color: #fff; border-color: #d9534f; }
+      .legend { display: flex; gap: 16px; margin-bottom: 12px; font-size: .85rem; }
+      .legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 6px; border-radius: 3px; border: 1px solid #999; vertical-align: -1px; }
+      .legend .free::before { background: #fff; }
+      .legend .held::before { background: #f0ad4e; border-color: #f0ad4e; }
+      .legend .booked::before { background: #d9534f; border-color: #d9534f; }
+      .error { color: #b00020; }
+    </style>
+  </head>
+  <body></body>
+</html>
