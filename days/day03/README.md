@@ -54,6 +54,13 @@ app.post('/api/seats/:id/book', (req, res) => {
 ```
 Rust chạy đa luồng: nếu quên `Mutex`, **không compile**. Node không có vấn đề này lúc này, nhưng gặp lại khi scale nhiều instance (Day 9 giải bằng transaction DB).
 
+## Test
+- **Unit test**: `#[cfg(test)] mod tests` nằm ngay trong file code (vd `models/seat.rs`), test được cả hàm private.
+- **Integration test**: folder `tests/`, mỗi file là 1 crate riêng, chỉ gọi được phần `pub` của lib (≈ `__tests__/`).
+  - `api/tests/seats_api.rs`: gửi request thẳng vào router bằng `tower::ServiceExt::oneshot` (≈ supertest).
+  - `web/tests/models.rs`: parse JSON → `Seat`. Web cần thêm `src/lib.rs` vì `tests/` không import được từ `main.rs`.
+- Chạy: `cargo test` trong `api/` hoặc `web/`.
+
 ## Tự kiểm tra
 1. `cd api && cargo test` — 2 test pass. Bỏ `mut` ở `let mut seat` trong test → lỗi gì?
 2. Trong `seat_grid.rs`, bỏ dòng `let id = id.clone();` trong `on_click` → compiler nói gì? (gợi ý: closure `FnMut` gọi nhiều lần nhưng `async move` lấy mất `id`)

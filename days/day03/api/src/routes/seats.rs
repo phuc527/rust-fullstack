@@ -35,3 +35,20 @@ pub async fn book(
     }
     Ok(Json(seat.clone()))
 } // `seats` (guard) bị drop ở đây → mở khóa
+
+// DELETE /api/seats/{id}/book — gỡ đặt. 409 nếu ghế đang trống.
+// ponytail: chưa có user nên ai cũng gỡ được; Day auth sẽ chỉ cho chủ ghế gỡ.
+pub async fn cancel(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+) -> Result<Json<Seat>, StatusCode> {
+    let mut seats = state.lock().unwrap();
+    let seat = seats
+        .iter_mut()
+        .find(|s| s.id == id)
+        .ok_or(StatusCode::NOT_FOUND)?;
+    if !seat.cancel() {
+        return Err(StatusCode::CONFLICT);
+    }
+    Ok(Json(seat.clone()))
+}

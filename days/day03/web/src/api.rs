@@ -27,3 +27,17 @@ pub async fn book_seat(id: &str) -> Result<Seat, String> {
         s => Err(format!("Lỗi HTTP {s}")),
     }
 }
+
+// DELETE /api/seats/{id}/book — gỡ đặt.
+pub async fn cancel_seat(id: &str) -> Result<Seat, String> {
+    let res = Request::delete(&format!("/api/seats/{id}/book"))
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+    match res.status() {
+        200 => res.json::<Seat>().await.map_err(|e| e.to_string()),
+        409 => Err("Ghế này chưa được đặt".into()),
+        404 => Err("Không tìm thấy ghế".into()),
+        s => Err(format!("Lỗi HTTP {s}")),
+    }
+}

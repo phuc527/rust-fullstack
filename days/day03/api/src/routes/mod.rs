@@ -15,7 +15,8 @@ pub fn router(state: AppState) -> Router {
     let api = Router::new()
         .route("/health", get(health::health))
         .route("/seats", get(seats::list))
-        .route("/seats/{id}/book", post(seats::book));
+        // Cùng path, khác method: chain .delete() (≈ router.route(path).post().delete()).
+        .route("/seats/{id}/book", post(seats::book).delete(seats::cancel));
 
     Router::new().nest("/api", api).with_state(state)
 }

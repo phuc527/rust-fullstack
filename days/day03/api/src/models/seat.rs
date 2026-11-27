@@ -43,6 +43,15 @@ impl Seat {
         self.booked = true;
         true
     }
+
+    /// Gỡ đặt. Trả false nếu ghế đang trống.
+    pub fn cancel(&mut self) -> bool {
+        if !self.booked {
+            return false;
+        }
+        self.booked = false;
+        true
+    }
 }
 
 // Unit test đặt cạnh code. #[cfg(test)] = chỉ compile khi `cargo test`.
@@ -63,5 +72,7 @@ mod tests {
         let mut seat = Seat::grid().remove(0); // `mut` vì book() cần &mut
         assert!(seat.book());
         assert!(!seat.book());
+        assert!(seat.cancel());
+        assert!(!seat.cancel());
     }
 }

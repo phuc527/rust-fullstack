@@ -1,6 +1,9 @@
 use leptos::{prelude::*, task::spawn_local};
 
-use crate::{api::book_seat, models::Seat};
+use crate::{
+    api::{book_seat, cancel_seat},
+    models::Seat,
+};
 
 #[component]
 pub fn SeatGrid(seats: Vec<Seat>) -> impl IntoView {
@@ -20,10 +23,17 @@ pub fn SeatGrid(seats: Vec<Seat>) -> impl IntoView {
                         // Mỗi click clone lại, vì async block bên dưới lấy luôn bản này.
                         let id = id.clone();
                         // spawn_local ≈ gọi async không await trong onClick (fire-and-forget)
+                        // Đang đặt → gỡ, đang trống → đặt (toggle).
+                        let was_booked = booked.get_untracked();
                         spawn_local(async move {
-                            match book_seat(&id).await { // &id: cho MƯỢN, không move
-                                Ok(_) => {
-                                    booked.set(true);
+                            let res = if was_booked {
+                                cancel_seat(&id).await
+                            } else {
+                                book_seat(&id).await // &id: cho MƯỢN, không move
+                            };
+                            match res {
+                                Ok(seat) => {
+                                    booked.set(seat.booked);
                                     error.set(None);
                                 }
                                 Err(e) => error.set(Some(e)),
@@ -35,7 +45,6 @@ pub fn SeatGrid(seats: Vec<Seat>) -> impl IntoView {
                         <button
                             class="seat"
                             class:booked=move || booked.get()
-                            disabled=move || booked.get()
                             title=title
                             on:click=on_click
                         >

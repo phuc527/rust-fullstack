@@ -7,3 +7,6 @@ edition = "2024"
 leptos = { version = "0.8", features = ["csr"] }
 gloo-net = "0.6"
 serde = { version = "1", features = ["derive"] }
+
+[dev-dependencies]
+serde_json = "1"
